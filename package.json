@@ -1,0 +1,30 @@
+{
+  "name": "generic-sacn",
+  "legacy": [
+    "sacn"
+  ],
+  "version": "0.0.1",
+  "api_version": "1.0.0",
+  "description": "Streaming ACN (E1.31) module for Companion",
+  "keywords": [
+    "Protocol",
+    "Lighting",
+    "Generic",
+    "Net3",
+    "SACN"
+  ],
+  "manufacturer": "Generic",
+  "product": "Streaming ACN",
+  "shortname": "SACN",
+  "homepage": "https://esta.org/",
+  "main": "sacn.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Not Me",
+  "license": "MIT",
+  "dependencies": {
+    "e131": "^1.1.3"
+  },
+  "devDependencies": {}
+}
