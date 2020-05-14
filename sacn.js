@@ -1,4 +1,5 @@
 var sacn = require('e131');
+var sacnClient = sacn.client;
 var instance_skel = require('../../instance_skel');
 var log;
 
