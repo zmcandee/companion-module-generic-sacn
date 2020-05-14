@@ -1,5 +1,4 @@
 var sacn = require('e131');
-var sacnClient = sacn.client;
 var instance_skel = require('../../instance_skel');
 var log;
 
@@ -34,7 +33,7 @@ instance.prototype.init = function() {
 	self.init_sacn();
 
 	self.timer = setInterval(function () {
-		if (self.client !== undefined) {
+		if (self.client !== undefined && !self.packet.getOption(self.packet.Options.TERMINATED)) {
 			self.client.send(self.packet);
 		}
 	}, 1000);
@@ -44,13 +43,10 @@ instance.prototype.terminate = function() {
 	var self = this;
 
 	if(self.client !== undefined) {
-		self.packet.setOptions(self.packet.Options.TERMINATED, true);
+		self.packet.setOption(self.packet.Options.TERMINATED, true);
 		self.client.send(self.packet);
 	}
 	
-	delete self.client;
-	delete self.packet;
-	delete self.data;
 };	
 
 instance.prototype.init_sacn= function() {
@@ -60,15 +56,18 @@ instance.prototype.init_sacn= function() {
 
 	if(self.client !== undefined) {
 		self.terminate();
+		delete self.client;
+		delete self.packet;
+		delete self.data;
 	}
 
 	if(self.config.host) {
-		self.client = new sacnClient(self.config.host);
+		self.client = new sacn.Client(self.config.host);
 		self.packet = self.client.createPacket(512);
 		self.data = self.packet.getSlotsData();
 
 		self.packet.setSourceName("Companion App");
-		self.packet.setUniverse(self.config.universe || 0x1);
+		self.packet.setUniverse(self.config.universe || 0x01);
 		self.packet.setPriority(self.config.priority || self.packet.DEFAULT_PRIORITY);
 
 		for(var i=0; i<self.data.length; i++) {
@@ -123,6 +122,9 @@ instance.prototype.destroy = function() {
 
 	if (self.client !== undefined) {
 		self.terminate();
+		delete self.client;
+		delete self.packet;
+		delete self.data;
 	}
 
 	if (self.timer) {
@@ -175,6 +177,7 @@ instance.prototype.action = function(action) {
 
 		case 'set':
 			if (self.client !== undefined) {
+				self.packet.setOption(self.packet.Options.TERMINATED, false);
 				self.data[action.options.channel-1] = action.options.value;
 				self.client.send(self.packet);
 			}
