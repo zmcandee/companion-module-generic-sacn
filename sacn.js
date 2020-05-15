@@ -1,4 +1,4 @@
-var sacn = require('e131');
+var sacnClient = require('./lib/client.js').client;
 var instance_skel = require('../../instance_skel');
 var log;
 
@@ -62,13 +62,13 @@ instance.prototype.init_sacn= function() {
 	}
 
 	if(self.config.host) {
-		self.client = new sacn.Client(self.config.host);
+		self.client = new sacnClient(self.config.host);
 		self.packet = self.client.createPacket(512);
-		self.data = self.packet.getSlotsData();
+		self.data = self.packet.getSlots();
 
 		self.packet.setSourceName("Companion App");
 		self.packet.setUniverse(self.config.universe || 0x01);
-		self.packet.setPriority(self.config.priority || self.packet.DEFAULT_PRIORITY);
+		self.packet.setPriority(self.config.priority);
 
 		for(var i=0; i<self.data.length; i++) {
 			self.data[i] = 0x00;
@@ -102,15 +102,17 @@ instance.prototype.config_fields = function () {
 			id: 'priority',
 			label: 'Priority (1-201)',
 			min: 1,
-			max: 201
+			max: 201,
+			default: 100
 		},
 		{
-			type: 'textinput',
+			type: 'number',
 			id: 'universe',
-			label: 'Universe number (0-63)',
+			label: 'Universe number (1-63999)',
 			width: 6,
-			default: 0,
-			regex: '/^0*([0-9]|[1-5][0-9]|6[0-3])$/'
+			min: 1,
+			max: 63999,
+			default: 1
 		}
 	];
 	return fields;
