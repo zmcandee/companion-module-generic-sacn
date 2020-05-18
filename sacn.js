@@ -49,6 +49,15 @@ instance.prototype.terminate = function() {
 	
 };	
 
+instance.prototype.genUUID = function() {
+	// Crazy 1-liner UUIDv4 based on gist.github.com/jed/982883
+	// Consider just importing the UUID v4 module
+
+	function id(a) {return a?(a^Math.random()*16>>a/4).toString(16):([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,id)};
+
+	return id();
+};
+
 instance.prototype.init_sacn= function() {
 	var self = this;
 
@@ -66,7 +75,8 @@ instance.prototype.init_sacn= function() {
 		self.packet = self.client.createPacket(512);
 		self.data = self.packet.getSlots();
 
-		self.packet.setSourceName("Companion App");
+		self.packet.setSourceName(self.config.name || "Companion App");
+		self.packet.setUUID(self.config.uuid || self.genUUID());
 		self.packet.setUniverse(self.config.universe || 0x01);
 		self.packet.setPriority(self.config.priority);
 
@@ -89,6 +99,18 @@ instance.prototype.config_fields = function () {
 			width: 12,
 			label: 'Information',
 			value: 'This module will transmit SACN packets to the ip and universe you specify below. If you need more universes, add multiple SACN instances.'
+		},
+		{
+			type: 'textinput',
+			id: 'name',
+			label: 'Source name',
+			default: 'Companion ' + self.id
+		},
+		{
+			type: 'textinput',
+			id: 'uuid',
+			label: 'Source UUID',
+			default: self.genUUID()
 		},
 		{
 			type: 'textinput',
