@@ -3,7 +3,7 @@
   "legacy": [
     "sacn"
   ],
-  "version": "0.0.1",
+  "version": "1.0.0",
   "api_version": "1.0.0",
   "description": "Streaming ACN (E1.31) module for Companion",
   "keywords": [
@@ -21,7 +21,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Not Me",
+  "author": "Zach Candee <zmcandee@gmail.com>",
   "license": "MIT",
   "devDependencies": {}
 }
